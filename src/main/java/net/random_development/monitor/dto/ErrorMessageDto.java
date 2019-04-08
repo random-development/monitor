@@ -1,4 +1,4 @@
-package net.boozr.boozr_backend.dto;
+package net.random_development.monitor.dto;
 
 public class ErrorMessageDto {
 

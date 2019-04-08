@@ -1,4 +1,4 @@
-package net.boozr.boozr_backend.exception;
+package net.random_development.monitor.exception;
 
 import org.springframework.http.HttpStatus;
 

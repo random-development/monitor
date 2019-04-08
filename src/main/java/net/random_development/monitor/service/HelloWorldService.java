@@ -1,4 +1,4 @@
-package net.boozr.boozr_backend.service;
+package net.random_development.monitor.service;
 
 import org.springframework.stereotype.Service;
 

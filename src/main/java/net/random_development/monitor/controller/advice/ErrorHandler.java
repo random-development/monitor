@@ -1,7 +1,7 @@
-package net.boozr.boozr_backend.controller.advice;
+package net.random_development.monitor.controller.advice;
 
-import net.boozr.boozr_backend.dto.ErrorMessageDto;
-import net.boozr.boozr_backend.exception.ApiException;
+import net.random_development.monitor.dto.ErrorMessageDto;
+import net.random_development.monitor.exception.ApiException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

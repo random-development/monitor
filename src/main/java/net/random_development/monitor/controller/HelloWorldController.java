@@ -1,7 +1,7 @@
-package net.boozr.boozr_backend.controller;
+package net.random_development.monitor.controller;
 
-import net.boozr.boozr_backend.exception.BadRequestApiException;
-import net.boozr.boozr_backend.service.HelloWorldService;
+import net.random_development.monitor.exception.BadRequestApiException;
+import net.random_development.monitor.service.HelloWorldService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
