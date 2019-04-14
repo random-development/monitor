@@ -1,0 +1,7 @@
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: docker
+      script: docker build .
