@@ -1,4 +1,4 @@
-package net.random_development.monitor.controller;
+package net.random_development.monitor.dto;
 
 public class Measurement {
 

@@ -1,6 +1,7 @@
 package net.random_development.monitor.controller;
 
 import net.random_development.monitor.dto.ListMeasurementsParameters;
+import net.random_development.monitor.dto.Measurement;
 import net.random_development.monitor.dto.Metric;
 import net.random_development.monitor.dto.Resource;
 import net.random_development.monitor.exception.NotFoundApiException;
@@ -77,8 +78,8 @@ public class ResourceController {
 
     @GetMapping("/{resourceName}/metrics/{metricName}/measurements")
     public ResponseEntity<List<Measurement>> listMeasurements(@PathVariable("resourceName") String resourceName,
-                                                         @PathVariable("metricName") String metricName,
-                                                         ListMeasurementsParameters listMeasurementsParameters) {
+                                                              @PathVariable("metricName") String metricName,
+                                                              ListMeasurementsParameters listMeasurementsParameters) {
         return Optional.ofNullable(measurementService.list(resourceName, metricName, listMeasurementsParameters))
                 .map(ResponseEntity::ok)
                 .orElseThrow(NotFoundApiException::new);

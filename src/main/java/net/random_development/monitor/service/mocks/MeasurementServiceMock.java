@@ -1,7 +1,7 @@
 package net.random_development.monitor.service.mocks;
 
-import net.random_development.monitor.controller.Measurement;
 import net.random_development.monitor.dto.ListMeasurementsParameters;
+import net.random_development.monitor.dto.Measurement;
 import net.random_development.monitor.service.MeasurementService;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +26,10 @@ public class MeasurementServiceMock implements MeasurementService {
         measurement.setValue(i);
         return measurement;
     }
+
+    @Override
+    public void add(String resourceName, String metricName, Measurement measurement) {
+
+    }
+
 }
