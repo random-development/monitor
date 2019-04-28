@@ -1,10 +1,14 @@
 package net.random_development.monitor.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
 public class Resource {
 
     private String name;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Metric> metrics;
 
     public String getName() {

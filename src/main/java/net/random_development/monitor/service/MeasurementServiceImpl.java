@@ -20,9 +20,6 @@ import java.util.stream.Stream;
 @Service
 public class MeasurementServiceImpl implements MeasurementService {
 
-    private static final String FIELD_VALUE = "value";
-    private static final String FIELD_RESOURCE_NAME = "resource";
-
     private final InfluxService influxService;
 
     @Autowired
@@ -32,7 +29,7 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     @Override
     public List<Measurement> list(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
-        String query = String.format("SELECT %s FROM %s WHERE %s = '%s'", FIELD_VALUE, metricName, FIELD_RESOURCE_NAME, resourceName);
+        String query = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s'", Influx.FIELD_VALUE, Influx.MEASUREMENT, Influx.FIELD_METRIC_NAME, metricName, Influx.FIELD_RESOURCE_NAME, resourceName);
         return influxService.query(query).stream()
                 .flatMap(this::toMeasurements)
                 .collect(Collectors.toList());
@@ -64,10 +61,11 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     @Override
     public void add(String resourceName, String metricName, Measurement measurement) {
-        Point point = Point.measurement(metricName)
+        Point point = Point.measurement(Influx.MEASUREMENT)
                 .time(measurement.getTime(), TimeUnit.SECONDS)
-                .tag(FIELD_RESOURCE_NAME, resourceName)
-                .addField(FIELD_VALUE, measurement.getValue())
+                .tag(Influx.FIELD_RESOURCE_NAME, resourceName)
+                .tag(Influx.FIELD_METRIC_NAME, metricName)
+                .addField(Influx.FIELD_VALUE, measurement.getValue())
                 .build();
         influxService.write(point);
     }

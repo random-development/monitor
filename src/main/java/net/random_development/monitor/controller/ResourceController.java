@@ -42,7 +42,7 @@ public class ResourceController {
 
     @GetMapping("/{resourceName}")
     public ResponseEntity<Resource> getResource(@PathVariable("resourceName") String resourceName) {
-        return Optional.ofNullable(resourceService.get(resourceName))
+        return resourceService.get(resourceName)
                 .map(ResponseEntity::ok)
                 .orElseThrow(NotFoundApiException::new);
     }
@@ -65,7 +65,7 @@ public class ResourceController {
     @GetMapping("/{resourceName}/metrics/{metricName}")
     public ResponseEntity<Metric> getMetric(@PathVariable("resourceName") String resourceName,
                                             @PathVariable("metricName") String metricName) {
-        return Optional.ofNullable(metricService.get(resourceName, metricName))
+        return metricService.get(resourceName, metricName)
                 .map(ResponseEntity::ok)
                 .orElseThrow(NotFoundApiException::new);
     }

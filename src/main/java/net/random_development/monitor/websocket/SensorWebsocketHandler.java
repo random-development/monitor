@@ -9,8 +9,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @Component
 public class SensorWebsocketHandler extends TextWebSocketHandler {
+
+    private static final Logger LOGGER = Logger.getLogger(SensorWebsocketHandler.class.getName());
 
     private final MeasurementService measurementService;
 
@@ -24,6 +29,7 @@ public class SensorWebsocketHandler extends TextWebSocketHandler {
         String resourceName = getResourceName(session.getUri().toString());
         String metricName = getMetricName(session.getUri().toString());
         Measurement measurement = getMeasurement(message);
+        LOGGER.log(Level.FINE, "adding: {0}-{1}-{2}", new Object[]{resourceName, metricName, measurement});
         measurementService.add(resourceName, metricName, measurement);
     }
 

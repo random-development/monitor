@@ -21,4 +21,11 @@ public class Measurement {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return "Measurement{" +
+                "time=" + time +
+                ", value=" + value +
+                '}';
+    }
 }
