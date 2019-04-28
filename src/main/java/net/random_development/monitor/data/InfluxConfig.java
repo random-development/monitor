@@ -5,11 +5,13 @@ public class InfluxConfig {
     private String url;
     private String username;
     private String password;
+    private String databaseName;
 
-    public InfluxConfig(String username, String username1, String password) {
+    public InfluxConfig(String url, String username, String password, String databaseName) {
+        this.url = url;
         this.username = username;
-        this.username = username1;
         this.password = password;
+        this.databaseName = databaseName;
     }
 
     public String getUrl() {
@@ -36,4 +38,11 @@ public class InfluxConfig {
         this.password = password;
     }
 
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
 }

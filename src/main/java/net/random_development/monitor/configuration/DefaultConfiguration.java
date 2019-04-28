@@ -23,12 +23,15 @@ public class DefaultConfiguration implements WebSocketConfigurer {
     @Value("${influx.password}")
     private String influxPassword;
 
+    @Value("${influx.database-name}")
+    private String influxDatabaseName;
+
     @Autowired
     private SensorWebsocketHandler sensorWebsocketHandler;
 
     @Bean
     public InfluxConfig influxConfig() {
-        return new InfluxConfig(influxUrl, influxUser, influxPassword);
+        return new InfluxConfig(influxUrl, influxUser, influxPassword, influxDatabaseName);
     }
 
     @Override
