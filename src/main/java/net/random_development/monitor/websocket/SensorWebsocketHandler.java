@@ -29,7 +29,7 @@ public class SensorWebsocketHandler extends TextWebSocketHandler {
         String resourceName = getResourceName(session.getUri().toString());
         String metricName = getMetricName(session.getUri().toString());
         Measurement measurement = getMeasurement(message);
-        LOGGER.log(Level.FINE, "adding: {0}-{1}-{2}", new Object[]{resourceName, metricName, measurement});
+        LOGGER.log(Level.FINE, "received: resourceName={0} metricName={1} {2}", new Object[]{resourceName, metricName, measurement});
         measurementService.add(resourceName, metricName, measurement);
     }
 

@@ -14,11 +14,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 public class MeasurementServiceImpl implements MeasurementService {
+
+    private static final Logger LOGGER = Logger.getLogger(MeasurementServiceImpl.class.getName());
 
     private final InfluxService influxService;
     private final DateParsingService dateParsingService;
@@ -85,6 +89,7 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     @Override
     public void add(String resourceName, String metricName, Measurement measurement) {
+        LOGGER.log(Level.FINE, "adding: resourceName={0} metricName={1} {2}", new Object[]{resourceName, metricName, measurement});
         Point point = Point.measurement(Influx.MEASUREMENT)
                 .time(measurement.getTime(), TimeUnit.SECONDS)
                 .tag(Influx.FIELD_RESOURCE_NAME, resourceName)

@@ -1,5 +1,6 @@
 package net.random_development.monitor.data;
 
+import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
@@ -36,6 +37,8 @@ public class InfluxServiceImpl implements InfluxService {
         String rpName = "aRetentionPolicy";
         influxDB.query(new Query("CREATE RETENTION POLICY " + rpName + " ON " + influxConfig.getDatabaseName() + " DURATION 30h REPLICATION 2 SHARD DURATION 30m DEFAULT"));
         influxDB.setRetentionPolicy(rpName);
+
+        influxDB.enableBatch(BatchOptions.DEFAULTS);
 
         return influxDB;
     }
