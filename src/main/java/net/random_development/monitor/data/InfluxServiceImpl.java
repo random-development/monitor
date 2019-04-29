@@ -24,11 +24,11 @@ public class InfluxServiceImpl implements InfluxService {
     @Autowired
     public InfluxServiceImpl(InfluxConfig influxConfig) {
         this.influxConfig = influxConfig;
-        init();
+        this.influxDB = connect();
     }
 
-    private void init() {
-        influxDB = InfluxDBFactory.connect(influxConfig.getUrl(), influxConfig.getUsername(), influxConfig.getPassword());
+    private InfluxDB connect() {
+        InfluxDB influxDB = InfluxDBFactory.connect(influxConfig.getUrl(), influxConfig.getUsername(), influxConfig.getPassword());
 
         influxDB.query(new Query("CREATE DATABASE " + influxConfig.getDatabaseName()));
         influxDB.setDatabase(influxConfig.getDatabaseName());
@@ -36,8 +36,9 @@ public class InfluxServiceImpl implements InfluxService {
         String rpName = "aRetentionPolicy";
         influxDB.query(new Query("CREATE RETENTION POLICY " + rpName + " ON " + influxConfig.getDatabaseName() + " DURATION 30h REPLICATION 2 SHARD DURATION 30m DEFAULT"));
         influxDB.setRetentionPolicy(rpName);
-    }
 
+        return influxDB;
+    }
 
     @Override
     public void write(Point point) {
