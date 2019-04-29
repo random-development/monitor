@@ -29,7 +29,7 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     @Override
     public List<Measurement> list(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
-        String query = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s'", Influx.FIELD_VALUE, Influx.MEASUREMENT, Influx.FIELD_METRIC_NAME, metricName, Influx.FIELD_RESOURCE_NAME, resourceName);
+        String query = String.format("SELECT %s FROM \"%s\" WHERE %s = '%s' AND %s = '%s'", Influx.FIELD_VALUE, Influx.MEASUREMENT, Influx.FIELD_METRIC_NAME, metricName, Influx.FIELD_RESOURCE_NAME, resourceName);
         return influxService.query(query).stream()
                 .flatMap(this::toMeasurements)
                 .collect(Collectors.toList());
