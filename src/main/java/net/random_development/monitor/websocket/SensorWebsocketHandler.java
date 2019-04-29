@@ -43,7 +43,6 @@ public class SensorWebsocketHandler extends TextWebSocketHandler {
         return split[split.length - 1];
     }
 
-
     private String getResourceName(String uri) {
         String[] split = splitUrl(uri);
         return split[split.length - 3];

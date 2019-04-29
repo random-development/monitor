@@ -1,4 +1,4 @@
-package net.random_development.monitor.service.mocks;
+package net.random_development.monitor.service;
 
 import net.random_development.monitor.data.InfluxService;
 import net.random_development.monitor.dto.Metric;

@@ -3,13 +3,13 @@ package net.random_development.monitor.service;
 import net.random_development.monitor.data.InfluxService;
 import net.random_development.monitor.dto.ListMeasurementsParameters;
 import net.random_development.monitor.dto.Measurement;
+import net.random_development.monitor.dto.QueryWhereElement;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -21,24 +21,53 @@ import java.util.stream.Stream;
 public class MeasurementServiceImpl implements MeasurementService {
 
     private final InfluxService influxService;
+    private final DateParsingService dateParsingService;
 
     @Autowired
-    public MeasurementServiceImpl(InfluxService influxService) {
+    public MeasurementServiceImpl(InfluxService influxService,
+                                  DateParsingService dateParsingService) {
         this.influxService = influxService;
+        this.dateParsingService = dateParsingService;
     }
 
     @Override
     public List<Measurement> list(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
-        String query = String.format("SELECT %s FROM \"%s\" WHERE %s = '%s' AND %s = '%s'", Influx.FIELD_VALUE, Influx.MEASUREMENT, Influx.FIELD_METRIC_NAME, metricName, Influx.FIELD_RESOURCE_NAME, resourceName);
+        String query = buildListQuery(resourceName, metricName, listMeasurementsParameters);
         return influxService.query(query).stream()
                 .flatMap(this::toMeasurements)
                 .collect(Collectors.toList());
     }
 
+    private String buildListQuery(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
+        StringBuilder query = new StringBuilder();
+        query.append(String.format("SELECT %s FROM \"%s\" ", Influx.FIELD_VALUE, Influx.MEASUREMENT));
+        query.append(String.format("WHERE %s ", buildQueryWhere(resourceName, metricName, listMeasurementsParameters)));
+        query.append("ORDER BY time DESC");
+        if (listMeasurementsParameters.getLimit() != null) {
+            query.append(String.format("LIMIT %s", listMeasurementsParameters.getLimit()));
+        }
+        return query.toString();
+    }
+
+    private String buildQueryWhere(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
+        List<QueryWhereElement> queryWhereElements = new ArrayList<>();
+        queryWhereElements.add(new QueryWhereElement(Influx.FIELD_METRIC_NAME, metricName, InfluxOperator.EQ));
+        queryWhereElements.add(new QueryWhereElement(Influx.FIELD_RESOURCE_NAME, resourceName, InfluxOperator.EQ));
+        if (listMeasurementsParameters.getFrom() != null) {
+            queryWhereElements.add(new QueryWhereElement(Influx.FIELD_TIME, dateParsingService.fromTimestamp(listMeasurementsParameters.getFrom()), InfluxOperator.GT));
+        }
+        if (listMeasurementsParameters.getTo() != null) {
+            queryWhereElements.add(new QueryWhereElement(Influx.FIELD_TIME, dateParsingService.fromTimestamp(listMeasurementsParameters.getTo()), InfluxOperator.LT));
+        }
+        return queryWhereElements.stream()
+                .map(entry -> String.format("%s %s '%s'", entry.getField(), entry.getOperator().getValue(), entry.getValue()))
+                .collect(Collectors.joining(" AND "));
+    }
+
     private Stream<Measurement> toMeasurements(QueryResult.Result queryResult) {
         return Optional.ofNullable(queryResult.getSeries())
                 .map(Collection::stream)
-                .orElseThrow(() -> new RuntimeException("error"))
+                .orElse(Stream.empty())
                 .flatMap(this::seriesToMeasurement);
     }
 
@@ -49,14 +78,9 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     private Measurement valueToMeasurement(List<Object> values) {
         Measurement measurement = new Measurement();
-        measurement.setTime(toTime((String) values.get(0)));
+        measurement.setTime(dateParsingService.toTimestamp((String) values.get(0)));
         measurement.setValue((double) values.get(1));
         return measurement;
-    }
-
-    private int toTime(String s) {
-        DateTimeFormatter parser = ISODateTimeFormat.dateTimeNoMillis();
-        return (int) (parser.parseDateTime(s).getMillis() / 1000);
     }
 
     @Override

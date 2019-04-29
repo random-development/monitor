@@ -2,32 +2,31 @@ package net.random_development.monitor.dto;
 
 public class ListMeasurementsParameters {
 
-    private int from;
-    private int to;
-    private int limit;
+    private Integer from;
+    private Integer to;
+    private Integer limit;
 
-    public int getFrom() {
+    public Integer getFrom() {
         return from;
     }
 
-    public void setFrom(int from) {
+    public void setFrom(Integer from) {
         this.from = from;
     }
 
-    public int getTo() {
+    public Integer getTo() {
         return to;
     }
 
-    public void setTo(int to) {
+    public void setTo(Integer to) {
         this.to = to;
     }
 
-    public int getLimit() {
+    public Integer getLimit() {
         return limit;
     }
 
-    public void setLimit(int limit) {
+    public void setLimit(Integer limit) {
         this.limit = limit;
     }
-
 }
