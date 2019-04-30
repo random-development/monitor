@@ -43,14 +43,14 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     private String buildListQuery(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
-        StringBuilder query = new StringBuilder();
-        query.append(String.format("SELECT %s FROM \"%s\" ", Influx.FIELD_VALUE, Influx.MEASUREMENT));
-        query.append(String.format("WHERE %s ", buildQueryWhere(resourceName, metricName, listMeasurementsParameters)));
-        query.append("ORDER BY time DESC");
+        List<String> query = new ArrayList<>();
+        query.add(String.format("SELECT %s FROM \"%s\"", Influx.FIELD_VALUE, Influx.MEASUREMENT));
+        query.add(String.format("WHERE %s", buildQueryWhere(resourceName, metricName, listMeasurementsParameters)));
+        query.add("ORDER BY time DESC");
         if (listMeasurementsParameters.getLimit() != null) {
-            query.append(String.format("LIMIT %s", listMeasurementsParameters.getLimit()));
+            query.add(String.format("LIMIT %s", listMeasurementsParameters.getLimit()));
         }
-        return query.toString();
+        return String.join(" ", query);
     }
 
     private String buildQueryWhere(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
