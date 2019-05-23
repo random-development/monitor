@@ -35,7 +35,7 @@ public class InfluxServiceImpl implements InfluxService {
         influxDB.setDatabase(influxConfig.getDatabaseName());
 
         String rpName = "aRetentionPolicy";
-        influxDB.query(new Query("CREATE RETENTION POLICY " + rpName + " ON " + influxConfig.getDatabaseName() + " DURATION 30h REPLICATION 2 SHARD DURATION 30m DEFAULT"));
+        influxDB.query(new Query("CREATE RETENTION POLICY " + rpName + " ON " + influxConfig.getDatabaseName() + " DURATION INF REPLICATION 2 SHARD DURATION 30m DEFAULT"));
         influxDB.setRetentionPolicy(rpName);
 
         influxDB.enableBatch(BatchOptions.DEFAULTS);
