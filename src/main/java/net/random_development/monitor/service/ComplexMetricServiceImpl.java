@@ -38,6 +38,9 @@ public class ComplexMetricServiceImpl implements ComplexMetricService {
         if (metric.getInterval() == null || metric.getInterval() < 1) {
             throw new BadRequestApiException("Interval needs to be at least 1.");
         }
+        if (metric.getPeriod() % metric.getInterval() != 0) {
+            throw new BadRequestApiException("Period must be divisible by interval.");
+        }
         if (Strings.isEmpty(metric.getName())) {
             throw new BadRequestApiException("Name missing.");
         }

@@ -3,16 +3,15 @@ package net.random_development.monitor.service;
 import net.random_development.monitor.data.InfluxService;
 import net.random_development.monitor.dto.ListMeasurementsParameters;
 import net.random_development.monitor.dto.Measurement;
+import net.random_development.monitor.dto.Metric;
 import net.random_development.monitor.dto.QueryWhereElement;
+import net.random_development.monitor.exception.NotImplementedApiException;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,20 +25,58 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     private final InfluxService influxService;
     private final DateParsingService dateParsingService;
+    private final MetricService metricService;
 
     @Autowired
     public MeasurementServiceImpl(InfluxService influxService,
-                                  DateParsingService dateParsingService) {
+                                  DateParsingService dateParsingService,
+                                  MetricService metricService) {
         this.influxService = influxService;
         this.dateParsingService = dateParsingService;
+        this.metricService = metricService;
     }
 
     @Override
     public List<Measurement> list(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
+        return metricService.get(resourceName, metricName)
+                .map(metric -> {
+                    switch (metric.getType()) {
+                        case COMPLEX:
+                            return listComplex(resourceName, metric, listMeasurementsParameters);
+                        case NORMAL:
+                            return listNormal(resourceName, metricName, listMeasurementsParameters);
+                        default:
+                            throw new NotImplementedApiException();
+                    }
+                })
+                .orElse(Collections.emptyList());
+    }
+
+    private List<Measurement> listComplex(String resourceName, Metric metric, ListMeasurementsParameters listMeasurementsParameters) {
+        String query = buildComplexListQuery(resourceName, metric, listMeasurementsParameters);
+        return influxService.query(query).stream()
+                .flatMap(this::toMeasurements)
+                .collect(Collectors.toList());
+    }
+
+    private List<Measurement> listNormal(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {
         String query = buildListQuery(resourceName, metricName, listMeasurementsParameters);
         return influxService.query(query).stream()
                 .flatMap(this::toMeasurements)
                 .collect(Collectors.toList());
+    }
+
+    private String buildComplexListQuery(String resourceName, Metric metric, ListMeasurementsParameters listMeasurementsParameters) {
+        List<String> query = new ArrayList<>();
+        int n = metric.getPeriod() / metric.getInterval();
+        query.add(String.format("SELECT moving_average(sum(%s), %d) FROM \"%s\"", Influx.FIELD_VALUE, n, Influx.MEASUREMENT));
+        query.add(String.format("WHERE %s", buildQueryWhere(resourceName, metric.getSourceMetric(), listMeasurementsParameters)));
+        query.add(String.format("GROUP BY time(%ds)", metric.getInterval()));
+        query.add("ORDER BY time DESC");
+        if (listMeasurementsParameters.getLimit() != null) {
+            query.add(String.format("LIMIT %s", listMeasurementsParameters.getLimit()));
+        }
+        return String.join(" ", query);
     }
 
     private String buildListQuery(String resourceName, String metricName, ListMeasurementsParameters listMeasurementsParameters) {

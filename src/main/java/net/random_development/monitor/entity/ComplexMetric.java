@@ -6,7 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 
 
-
 @Entity
 @IdClass(ComplexMetricId.class)
 public class ComplexMetric {
@@ -26,10 +25,10 @@ public class ComplexMetric {
     private String sourceMetric;
 
     @Column(name = "metric_period", nullable = false)
-    private Double period;
+    private Integer period;
 
     @Column(name = "metric_interval", nullable = false)
-    private Double interval;
+    private Integer interval;
 
     public String getName() {
         return name;
@@ -63,19 +62,19 @@ public class ComplexMetric {
         this.sourceMetric = sourceMetric;
     }
 
-    public Double getPeriod() {
+    public Integer getPeriod() {
         return period;
     }
 
-    public void setPeriod(Double period) {
+    public void setPeriod(Integer period) {
         this.period = period;
     }
 
-    public Double getInterval() {
+    public Integer getInterval() {
         return interval;
     }
 
-    public void setInterval(Double interval) {
+    public void setInterval(Integer interval) {
         this.interval = interval;
     }
 

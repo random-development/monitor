@@ -48,8 +48,8 @@ public class MockDataService {
             complexMetric.setName(metricName);
             complexMetric.setSourceResource(resourceName);
             complexMetric.setSourceMetric(getMetricName(0));
-            complexMetric.setInterval(5.0 + metricI);
-            complexMetric.setPeriod(30.0 + metricI);
+            complexMetric.setInterval(5 + metricI);
+            complexMetric.setPeriod(2 * (5 + metricI));
 
             complexMetricRepository.save(complexMetric);
         }

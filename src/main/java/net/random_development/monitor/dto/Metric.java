@@ -14,10 +14,10 @@ public class Metric {
     private String sourceMetric;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double period;
+    private Integer period;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double interval;
+    private Integer interval;
 
     public String getName() {
         return name;
@@ -51,19 +51,19 @@ public class Metric {
         this.sourceMetric = sourceMetric;
     }
 
-    public Double getPeriod() {
+    public Integer getPeriod() {
         return period;
     }
 
-    public void setPeriod(Double period) {
+    public void setPeriod(Integer period) {
         this.period = period;
     }
 
-    public Double getInterval() {
+    public Integer getInterval() {
         return interval;
     }
 
-    public void setInterval(Double interval) {
+    public void setInterval(Integer interval) {
         this.interval = interval;
     }
 }
