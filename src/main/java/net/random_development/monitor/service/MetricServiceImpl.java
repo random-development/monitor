@@ -3,8 +3,6 @@ package net.random_development.monitor.service;
 import net.random_development.monitor.data.InfluxService;
 import net.random_development.monitor.dto.Metric;
 import net.random_development.monitor.dto.MetricType;
-import net.random_development.monitor.service.Influx;
-import net.random_development.monitor.service.MetricService;
 import org.influxdb.dto.QueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +17,13 @@ import java.util.stream.Stream;
 public class MetricServiceImpl implements MetricService {
 
     private final InfluxService influxService;
+    private final ComplexMetricService complexMetricService;
 
     @Autowired
-    public MetricServiceImpl(InfluxService influxService) {
+    public MetricServiceImpl(InfluxService influxService,
+                             ComplexMetricService complexMetricService) {
         this.influxService = influxService;
+        this.complexMetricService = complexMetricService;
     }
 
     @Override
@@ -61,15 +62,8 @@ public class MetricServiceImpl implements MetricService {
     }
 
     @Override
-    public Metric create(Metric metric) {
-        return mockMetric(0);
-    }
-
-    private Metric mockMetric(int i) {
-        Metric metric = new Metric();
-        metric.setName(String.format("metric-%s", i));
-        metric.setType(MetricType.NORMAL);
-        return metric;
+    public Metric create(String resourceName, Metric metric) {
+        return this.complexMetricService.create(resourceName, metric);
     }
 
 }

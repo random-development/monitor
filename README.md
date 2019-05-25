@@ -9,5 +9,11 @@ that no external dependencies are needed.
     $ cd monitor
     $ docker build .
 
-Using `docker-compose` is recommended. The image exposes the web server on port
-`8080`.
+The image exposes a monitor instance on port `8080`.
+
+While you can user `docker` directly using `docker-compose` is recommended.
+
+## H2
+
+If the `dev` profile is active then an H2 console can be accessed after
+navigating to `localhost:8080/h2`.

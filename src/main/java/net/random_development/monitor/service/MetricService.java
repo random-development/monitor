@@ -11,6 +11,6 @@ public interface MetricService {
 
     Optional<Metric> get(String resourceName, String metricName);
 
-    Metric create(Metric metric);
+    Metric create(String resourceName, Metric metric);
 
 }

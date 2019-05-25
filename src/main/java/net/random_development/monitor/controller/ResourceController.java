@@ -59,7 +59,7 @@ public class ResourceController {
                                               @RequestBody Metric metric) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(metricService.create(metric));
+                .body(metricService.create(resourceName, metric));
     }
 
     @GetMapping("/{resourceName}/metrics/{metricName}")
