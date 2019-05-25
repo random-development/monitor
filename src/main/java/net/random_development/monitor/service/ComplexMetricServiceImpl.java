@@ -9,8 +9,11 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class ComplexMetricServiceImpl implements ComplexMetricService {
@@ -35,6 +38,9 @@ public class ComplexMetricServiceImpl implements ComplexMetricService {
         if (metric.getInterval() == null || metric.getInterval() < 1) {
             throw new BadRequestApiException("Interval needs to be at least 1.");
         }
+        if (Strings.isEmpty(metric.getName())) {
+            throw new BadRequestApiException("Name missing.");
+        }
         if (Strings.isEmpty(metric.getSourceMetric())) {
             throw new BadRequestApiException("Source metric missing.");
         }
@@ -42,6 +48,19 @@ public class ComplexMetricServiceImpl implements ComplexMetricService {
         ComplexMetric complexMetric = toComplexMetric(resourceName, metric);
         LOGGER.log(Level.FINE, "creating or updating: {0}", new Object[]{complexMetric});
         return toMetric(complexMetricRepository.save(complexMetric));
+    }
+
+    @Override
+    public Optional<Metric> get(String resourceName, String metricName) {
+        return complexMetricRepository.getBySourceResourceAndName(resourceName, metricName)
+                .map(this::toMetric);
+    }
+
+    @Override
+    public List<Metric> list(String resourceName) {
+        return complexMetricRepository.findBySourceResource(resourceName).stream()
+                .map(this::toMetric)
+                .collect(Collectors.toList());
     }
 
     private Metric toMetric(ComplexMetric complexMetric) {

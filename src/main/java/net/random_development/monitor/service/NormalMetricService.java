@@ -5,11 +5,10 @@ import net.random_development.monitor.dto.Metric;
 import java.util.List;
 import java.util.Optional;
 
-public interface ComplexMetricService {
+public interface NormalMetricService {
 
-    Metric create(String resourceName, Metric metric);
+    List<Metric> list(String resourceName);
 
     Optional<Metric> get(String resourceName, String metricName);
 
-    List<Metric> list(String resourceName);
 }

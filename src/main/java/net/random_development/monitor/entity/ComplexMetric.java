@@ -3,8 +3,12 @@ package net.random_development.monitor.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+
+
 
 @Entity
+@IdClass(ComplexMetricId.class)
 public class ComplexMetric {
 
     @Id
@@ -14,6 +18,7 @@ public class ComplexMetric {
     @Column(name = "user_id")
     private String userId;
 
+    @Id
     @Column(name = "source_resource", nullable = false)
     private String sourceResource;
 
