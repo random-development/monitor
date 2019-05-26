@@ -50,4 +50,9 @@ public class MetricServiceImpl implements MetricService {
         return this.complexMetricService.create(resourceName, metric);
     }
 
+    @Override
+    public void delete(String resourceName, String metricName) {
+        this.complexMetricService.delete(resourceName, metricName);
+    }
+
 }

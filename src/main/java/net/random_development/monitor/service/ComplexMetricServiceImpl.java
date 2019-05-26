@@ -4,6 +4,7 @@ import net.random_development.monitor.dto.Metric;
 import net.random_development.monitor.dto.MetricType;
 import net.random_development.monitor.entity.ComplexMetric;
 import net.random_development.monitor.exception.BadRequestApiException;
+import net.random_development.monitor.exception.NotFoundApiException;
 import net.random_development.monitor.repository.ComplexMetricRepository;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,14 @@ public class ComplexMetricServiceImpl implements ComplexMetricService {
         complexMetric.setInterval(metric.getInterval());
         complexMetric.setUserId(metric.getUserId());
         return complexMetric;
+    }
+
+    @Override
+    public void delete(String resourceName, String metricName) {
+        int rows = complexMetricRepository.deleteBySourceResourceAndName(resourceName, metricName);
+        if (rows != 1) {
+            throw new NotFoundApiException();
+        }
     }
 
 }

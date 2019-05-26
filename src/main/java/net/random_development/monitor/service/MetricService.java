@@ -13,4 +13,5 @@ public interface MetricService {
 
     Metric create(String resourceName, Metric metric);
 
+    void delete(String resourceName, String metricName);
 }

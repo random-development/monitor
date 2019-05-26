@@ -5,7 +5,6 @@ import net.random_development.monitor.dto.Measurement;
 import net.random_development.monitor.dto.Metric;
 import net.random_development.monitor.dto.Resource;
 import net.random_development.monitor.exception.NotFoundApiException;
-import net.random_development.monitor.exception.NotImplementedApiException;
 import net.random_development.monitor.service.MeasurementService;
 import net.random_development.monitor.service.MetricService;
 import net.random_development.monitor.service.ResourceService;
@@ -74,7 +73,8 @@ public class ResourceController {
     @DeleteMapping("/{resourceName}/metrics/{metricName}")
     public ResponseEntity<Void> deleteMetric(@PathVariable("resourceName") String resourceName,
                                              @PathVariable("metricName") String metricName) {
-        throw new NotImplementedApiException();
+        metricService.delete(resourceName, metricName);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{resourceName}/metrics/{metricName}/measurements")

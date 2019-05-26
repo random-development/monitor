@@ -12,4 +12,6 @@ public interface ComplexMetricService {
     Optional<Metric> get(String resourceName, String metricName);
 
     List<Metric> list(String resourceName);
+
+    void delete(String resourceName, String metricName);
 }
