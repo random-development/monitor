@@ -7,17 +7,25 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 @Service
 public class MockDataService {
 
-    public static final int NUM_RESOURCES = 10;
-    public static final int NUM_METRICS = 10;
-    public static final int NUM_COMPLEX_METRICS = 5;
-    public static final int NUM_MEASUREMENTS = 100;
+    private static final Logger LOGGER = Logger.getLogger(MockDataService.class.getName());
+
+    private static final int NUM_RESOURCES = 10;
+    private static final int NUM_METRICS = 10;
+    private static final int NUM_COMPLEX_METRICS = 5;
+    private static final int NUM_MEASUREMENTS = 100;
+
+    private static final long SECOND = 1000;
+    private static final long MINUTE = 60 * SECOND;
+    private static final long HOUR = 60 * MINUTE;
 
     private final MeasurementService measurementService;
     private final ComplexMetricRepository complexMetricRepository;
@@ -30,15 +38,22 @@ public class MockDataService {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void insertMockData() {
-
+    public void insertComplexMetrics() {
+        LOGGER.info("inserting mock complex metrics");
         for (int resourceI = 0; resourceI < NUM_RESOURCES; resourceI++) {
             String resourceName = getResourceName(resourceI);
-            insertMetrics(resourceName);
             insertComplexMetrics(resourceName);
         }
     }
 
+    @Scheduled(fixedDelay = HOUR)
+    public void insertMetrics() {
+        LOGGER.info("inserting mock metrics");
+        for (int resourceI = 0; resourceI < NUM_RESOURCES; resourceI++) {
+            String resourceName = getResourceName(resourceI);
+            insertMetrics(resourceName);
+        }
+    }
 
     private void insertComplexMetrics(String resourceName) {
         for (int metricI = 0; metricI < NUM_COMPLEX_METRICS; metricI++) {
