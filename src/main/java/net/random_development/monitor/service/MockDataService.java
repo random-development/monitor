@@ -2,6 +2,7 @@ package net.random_development.monitor.service;
 
 import net.random_development.monitor.dto.Measurement;
 import net.random_development.monitor.entity.ComplexMetric;
+import net.random_development.monitor.gateway.GatewayConnection;
 import net.random_development.monitor.repository.ComplexMetricRepository;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class MockDataService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void insertMockData() {
-
+        GatewayConnection.getInstance().registerToGateway();
         for (int resourceI = 0; resourceI < NUM_RESOURCES; resourceI++) {
             String resourceName = getResourceName(resourceI);
             insertMetrics(resourceName);
