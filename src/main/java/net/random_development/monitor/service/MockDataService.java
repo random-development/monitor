@@ -30,9 +30,12 @@ public class MockDataService {
         this.complexMetricRepository = complexMetricRepository;
     }
 
+    @Autowired
+    private GatewayConnection gatewayConnection;
+
     @EventListener(ApplicationReadyEvent.class)
     public void insertMockData() {
-        GatewayConnection.getInstance().registerToGateway();
+        gatewayConnection.registerToGateway();
         for (int resourceI = 0; resourceI < NUM_RESOURCES; resourceI++) {
             String resourceName = getResourceName(resourceI);
             insertMetrics(resourceName);

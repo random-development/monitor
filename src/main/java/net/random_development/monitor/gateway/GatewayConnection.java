@@ -22,30 +22,18 @@ import java.util.logging.Logger;
 @Service
 public class GatewayConnection {
 
-//    @Value("${api.gateway.monitor.name}")
-//    private String monitorName;
-//
-//    @Value("${api.gateway.url}")
-//    private String gatewayUrl;
-//
-//    @Autowired
-//    public GatewayConnection(){}
+    @Value("${api.gateway.monitor.name}")
+    private String monitorName;
 
-    private static GatewayConnection INSTANCE = null;
+    @Value("${api.gateway.url.monitor}")
+    private String gatewayUrlMonitor;
+
+    @Value("${api.gateway.url.registration}")
+    private String gatewayUrlRegistration;
+
     private static final Logger LOGGER = Logger.getLogger(GatewayConnection.class.getName());
 
-    private  GatewayConnection() {}
-
-    public static GatewayConnection getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new GatewayConnection();
-        return INSTANCE;
-    }
-
     public void registerToGateway() {
-        String monitorName = "monitor2";
-        String gatewayUrlMonitor = "http://hibron.usermd.net:5000/mock/monitors/monitor2/";
-        String gatewayUrl = "http://hibron.usermd.net:5000/monitor/manage";
         LOGGER.log(Level.FINE, "name: {0}", monitorName);
         LOGGER.log(Level.FINE, "url: {0}", gatewayUrlMonitor);
 
@@ -53,11 +41,13 @@ public class GatewayConnection {
         json.addProperty("name", monitorName);
         json.addProperty("url", gatewayUrlMonitor);
 
+        LOGGER.log(Level.FINE, "json: {0}", json.toString());
+
         StringEntity entity = new StringEntity(json.toString(),
                 ContentType.APPLICATION_JSON);
 
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(gatewayUrl);
+        HttpPost request = new HttpPost(gatewayUrlRegistration);
         request.setEntity(entity);
 
         try {
