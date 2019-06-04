@@ -2,7 +2,6 @@ package net.random_development.monitor.service;
 
 import net.random_development.monitor.dto.Measurement;
 import net.random_development.monitor.entity.ComplexMetric;
-import net.random_development.monitor.gateway.GatewayConnection;
 import net.random_development.monitor.repository.ComplexMetricRepository;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,6 @@ public class MockDataService {
     private static final int NUM_COMPLEX_METRICS = 5;
     private static final int NUM_MEASUREMENTS = 100;
 
-    private static final long SECOND = 1000;
-    private static final long MINUTE = 60 * SECOND;
-    private static final long HOUR = 60 * MINUTE;
-
     private final MeasurementService measurementService;
     private final ComplexMetricRepository complexMetricRepository;
 
@@ -38,12 +33,8 @@ public class MockDataService {
         this.complexMetricRepository = complexMetricRepository;
     }
 
-    @Autowired
-    private GatewayConnection gatewayConnection;
-
     @EventListener(ApplicationReadyEvent.class)
     public void insertComplexMetrics() {
-        gatewayConnection.registerToGateway();
         LOGGER.info("inserting mock complex metrics");
         for (int resourceI = 0; resourceI < NUM_RESOURCES; resourceI++) {
             String resourceName = getResourceName(resourceI);
@@ -51,7 +42,7 @@ public class MockDataService {
         }
     }
 
-    @Scheduled(fixedDelay = HOUR)
+    @Scheduled(fixedDelay = Delay.HOUR)
     public void insertMetrics() {
         LOGGER.info("inserting mock metrics");
         for (int resourceI = 0; resourceI < NUM_RESOURCES; resourceI++) {
